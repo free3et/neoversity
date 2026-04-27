@@ -38,3 +38,35 @@ print(get_numbers_ticket(1, 49, 6))
 print(get_numbers_ticket(-1, 30, 5))
 print(get_numbers_ticket(1, 150, 7))
 print(get_numbers_ticket(-1, 1150, 6))
+
+# ------------------------------------------------------------------------------
+
+# Ваш сервіс розсилок може ефективно відправляти повідомлення лише тоді, коли номери телефонів представлені у коректному форматі. Тому вам необхідна функція, яка автоматично нормалізує номери телефонів до потрібного формату, видаляючи всі зайві символи та додаючи міжнародний код країни, якщо потрібно
+
+import re
+
+def normalize_phone(phone_number: str) -> str:
+    trimmed_phone_number = phone_number.strip() # remove leading and trailing whitespace
+    pattern = r'[^0-9+]'
+    cleaned_phone_number = re.sub(pattern, '', trimmed_phone_number) # remove all non-digit and non-plus characters
+
+    if cleaned_phone_number.startswith('+'):
+        return cleaned_phone_number
+    if cleaned_phone_number.startswith('380'):
+        return '+' + cleaned_phone_number
+    return '+38' + cleaned_phone_number
+
+raw_numbers = [
+    "067\\t123 4567",
+    "(095) 234-5678\\n",
+    "+380 44 123 4567",
+    "380501234567",
+    "    +38(050)123-32-34",
+    "     0503451234",
+    "(050)8889900",
+    "38050-111-22-22",
+    "38050 111 22 11   ",
+]
+
+sanitized_numbers = [normalize_phone(num) for num in raw_numbers]
+print("Нормалізовані номери телефонів для SMS-розсилки:", sanitized_numbers)
