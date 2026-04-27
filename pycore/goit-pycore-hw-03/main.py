@@ -70,3 +70,49 @@ raw_numbers = [
 
 sanitized_numbers = [normalize_phone(num) for num in raw_numbers]
 print("Нормалізовані номери телефонів для SMS-розсилки:", sanitized_numbers)
+
+# ------------------------------------------------------------------------------
+
+# Завдання 4 У межах вашої організації, ви відповідаєте за організацію привітань колег з днем народження. Щоб оптимізувати цей процес, вам потрібно створити функцію get_upcoming_birthdays, яка допоможе вам визначати, кого з колег потрібно привітати. Функція повинна повернути список всіх у кого день народження вперед на 7 днів включаючи поточний день.
+
+from datetime import datetime, timedelta
+
+users = [
+    {'name': 'John Doe', 'birthday': '2024.04.23'},
+    {'name': 'Jane Smith', 'birthday': '2024.04.29'},
+    {"name": "Jane Beam", "birthday": "1995.05.01"},
+    {"name": "Jill Johnson", "birthday": "1992.02.28"},
+    {"name": "Jack Dan", "birthday": "1993.03.01"},
+    {"name": "Jam Lowson", "birthday": "1994.10.13"},
+    {"name": "John Walker", "birthday": "1995.03.01"},
+    {"name": "Mick Davidson", "birthday": "1996.03.24"},
+    {"name": "Jill Johnson", "birthday": "1997.04.01"},
+    {"name": "Paul Collins", "birthday": "1998.03.01"},
+    {"name": "Suzie Miller", "birthday": "1999.08.05"}
+]
+
+def get_upcoming_birthdays(users: list[dict]) -> list[dict]:
+    upcoming_birthdays = []
+    today_day = datetime.today().date() # get current date
+
+    for user in users:
+        user_birthday = datetime.strptime(user["birthday"], "%Y.%m.%d").date() # convert string birthday to date
+
+        birthday_this_year = user_birthday.replace(year=today_day.year) # get birthday this year
+
+        if birthday_this_year < today_day:
+            birthday_this_year = birthday_this_year.replace(year=today_day.year + 1) # if birthday is in the past, set it to next year
+
+        delta_days = (birthday_this_year - today_day).days
+
+        if 0 <= delta_days <= 7: # if birthday is in the next 7 days, add it to the list
+            congratulation_date = birthday_this_year
+            if congratulation_date.weekday() == 5:
+                congratulation_date = congratulation_date + timedelta(days=2) # if birthday is on a Saturday, set it to next Monday
+            elif congratulation_date.weekday() == 6:
+                congratulation_date = congratulation_date + timedelta(days=1) # if birthday is on a Sunday, set it to next Monday
+            upcoming_birthdays.append({'name': user['name'], 'congratulation_date': congratulation_date.strftime('%Y.%m.%d')})
+    return upcoming_birthdays
+
+congrat_list = get_upcoming_birthdays(users)
+print(congrat_list)
