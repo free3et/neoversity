@@ -5,7 +5,8 @@ def total_salary(path: str) -> tuple[int, float]:
             sum_salary = 0
             count = 0
             for line in lines:
-                if not line.strip():
+                line = line.strip()
+                if not line:
                     continue
                 try:
                     name, salary = line.split(',')
